@@ -18,17 +18,27 @@ This repository contains the foundational data ingestion, preprocessing, and val
 
 ```text
 dip-porjc/
-├── raw_data/                    # Ignored in git (Raw Kaggle downloads)
-├── dataset_split/               # Ignored in git (Stratified splits)
+├── checkpoints/
+│   └── best_resnet50.pth
+├── results/
+│   └── confusion_matrix.png
 ├── src/
-│   ├── split_data.py            # Flattens Kaggle structure & stratifies classes
-│   ├── data.py                  # PyTorch Dataset, CLAHE transforms, DataLoaders
-│   ├── visnverify_preprocess.py # Validation visualizer & tensor assertions
-│   └── train.py                 # ResNet50 training loop
-├── pyproject.toml               # Python dependencies & OS-specific GPU routing
-├── uv.lock                      # Universal cross-platform lockfile
-└── README.md
-
+│   ├── dip_porjc/
+│   │   └── __init__.py
+│   ├── data.py
+│   ├── evaluate.py
+│   ├── split_data.py
+│   ├── train.py
+│   └── visnverify_preprocess.py
+├── trained/
+│   └── best_resnet50.pth
+├── .gitignore
+├── .python-version
+├── covid19-radiography-database.zip
+├── list_of_commands.md
+├── pyproject.toml
+├── README.md
+└── uv.lock
 ```
 
 ## Setup & Pipeline Execution (Cross-Platform)
@@ -80,8 +90,8 @@ unzip covid19-radiography-database.zip -d raw_data
 * **Extract (Windows PowerShell):**
 
 ```powershell
-Expand-Archive -Path "covid19-radiography-database.zip" -DestinationPath "raw_data" -Force
-
+New-Item -ItemType Directory -Force -Path "raw_data"
+tar -xf covid19-radiography-database.zip -C raw_data
 ```
 
 **4. Run Data Pipeline Scripts**
@@ -108,3 +118,31 @@ for images, labels in train_loader:
     pass
 
 ```
+
+## Model Engineering (Training Phase)
+
+**Role:** ML Engineer (Member 2)
+**Architecture:** ResNet50 (Transfer Learning)
+**Hyperparameters:** Adam Optimizer (lr=0.001), Weighted CrossEntropyLoss (COVID: 2.5, Normal: 1.0, Viral Pneumonia: 2.5)
+
+To train the model locally and generate the weights:
+```bash
+uv run src/train.py
+
+```
+
+### Training Phase Metrics
+
+| Metric | Result |
+| --- | --- |
+| **Best Validation Accuracy** | **98.41%** (Epoch 10) |
+| **Final Training Loss** | 0.0468 |
+| **Final Validation Loss** | 0.0496 |
+| **Compute Time Utilization** | 19 minutes, 12 seconds (NVIDIA CUDA) |
+| **Epochs to Convergence** | Peaked at Epoch 10 (out of 10 total epochs) |
+| **Model Checkpoints Generated** | 1 (`checkpoints/best_resnet50.pth`) |
+| **Loss Curve Stability** | Training loss decreased steadily; Validation loss exhibited moderate oscillation before converging at Epoch 10. |
+
+---
+
+**Note to Test Engineer:** The trained weights are saved locally. Please download `best_resnet50.pth` from the provided Drive link and place it in the `checkpoints/` directory before running your evaluation scripts.

@@ -1,0 +1,65 @@
+Setting up data loaders...
+Class Mapping: {'COVID': 0, 'Normal': 1, 'Viral Pneumonia': 2}
+Class counts (Imbalance Ratio): {'COVID': np.int64(2531), 'Normal': np.int64(7134), 'Viral Pneumonia': np.int64(941)}
+Training on device: cuda
+Loading ResNet50 model...
+
+Starting training for 10 epochs...
+
+Epoch 1/10
+----------
+Train Loss: 0.2044 Acc: 0.8949
+Val Loss: 0.3320 Acc: 0.8613
+*** New best model saved to C:\Users\castella\Testing\dip-porjc\dip-porjc\checkpoints\best_resnet50.pth ***
+
+Epoch 2/10
+----------
+Train Loss: 0.1092 Acc: 0.9432
+Val Loss: 0.1721 Acc: 0.9370
+*** New best model saved to C:\Users\castella\Testing\dip-porjc\dip-porjc\checkpoints\best_resnet50.pth ***
+
+Epoch 3/10
+----------
+Train Loss: 0.0960 Acc: 0.9539
+Val Loss: 0.3713 Acc: 0.8719
+
+Epoch 4/10
+----------
+Train Loss: 0.0834 Acc: 0.9590
+Val Loss: 0.0832 Acc: 0.9709
+*** New best model saved to C:\Users\castella\Testing\dip-porjc\dip-porjc\checkpoints\best_resnet50.pth ***
+
+Epoch 5/10
+----------
+Train Loss: 0.0624 Acc: 0.9697
+Val Loss: 0.2935 Acc: 0.8886
+
+Epoch 6/10
+----------
+Train Loss: 0.0589 Acc: 0.9713
+Val Loss: 0.1054 Acc: 0.9604
+
+Epoch 7/10
+----------
+Train Loss: 0.0622 Acc: 0.9705
+Val Loss: 0.1982 Acc: 0.9309
+
+Epoch 8/10
+----------
+Train Loss: 0.0580 Acc: 0.9726
+Val Loss: 0.1400 Acc: 0.9568
+
+Epoch 9/10
+----------
+Train Loss: 0.0639 Acc: 0.9686
+Val Loss: 0.1143 Acc: 0.9577
+
+Epoch 10/10
+----------
+Train Loss: 0.0468 Acc: 0.9768
+Val Loss: 0.0496 Acc: 0.9841
+*** New best model saved to C:\Users\castella\Testing\dip-porjc\dip-porjc\checkpoints\best_resnet50.pth ***
+
+==================================================
+Training completed in: 0h 19m 12.57s
+==================================================

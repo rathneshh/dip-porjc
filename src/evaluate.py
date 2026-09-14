@@ -17,7 +17,12 @@ def evaluate_model():
     # Load the validation data
     test_dataset = CovidXrayDataset(SPLIT_DIR / "test", transform=val_test_transform)
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=0)    
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    elif torch.backends.mps.is_available():
+        device = torch.device("mps")
+    else:
+        device = torch.device("cpu")
     print(f"Evaluating on device: {device}")
 
     # Load the blank ResNet50 architecture

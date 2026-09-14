@@ -1,3 +1,4 @@
+import time
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -9,30 +10,31 @@ from torch.utils.data import DataLoader
 from data import CovidXrayDataset, get_balanced_sampler, train_transform, val_test_transform
 
 def train_model():
-    # --- NEW: Build the DataLoaders here instead ---
-    print("Setting up data loaders...")
+    print("Setting up data loaders...", flush=True)
     BASE_DIR = Path(__file__).resolve().parent.parent
     SPLIT_DIR = BASE_DIR / "dataset_split"
     
     train_dataset = CovidXrayDataset(SPLIT_DIR / "train", transform=train_transform)
+
+    print(f"Class Mapping: {train_dataset.class_to_idx}", flush=True)
+
     sampler = get_balanced_sampler(train_dataset)
     train_loader = DataLoader(train_dataset, batch_size=32, sampler=sampler, num_workers=0)
     
     val_dataset = CovidXrayDataset(SPLIT_DIR / "val", transform=val_test_transform)
     val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=0)
-    # -----------------------------------------------
 
-    # 2. Setup Device (Uses Nvidia GPU if available, else standard CPU)
+    # 2. Setup Device
     if torch.cuda.is_available():
         device = torch.device("cuda")
     elif torch.backends.mps.is_available():
         device = torch.device("mps")
     else:
         device = torch.device("cpu")
-    print(f"Training on device: {device}")
+    print(f"Training on device: {device}", flush=True)
 
     # 3. Model Architecture (ResNet50)
-    print("Loading ResNet50 model...")
+    print("Loading ResNet50 model...", flush=True)
     model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
     
     num_ftrs = model.fc.in_features
@@ -40,7 +42,9 @@ def train_model():
     model = model.to(device)
 
     # 4. Loss Function and Optimizer
-    criterion = nn.CrossEntropyLoss()
+    class_weights = torch.tensor([2.5, 1.0, 2.5], dtype=torch.float).to(device)
+    
+    criterion = nn.CrossEntropyLoss(weight=class_weights)
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     # 5. Training Loop Setup
@@ -49,9 +53,12 @@ def train_model():
     checkpoint_dir = BASE_DIR / "checkpoints"
     checkpoint_dir.mkdir(exist_ok=True)
 
+    print(f"\nStarting training for {num_epochs} epochs...", flush=True)
+    start_time = time.time()  # Start the training timer
+
     for epoch in range(num_epochs):
-        print(f"\nEpoch {epoch+1}/{num_epochs}")
-        print("-" * 10)
+        print(f"\nEpoch {epoch+1}/{num_epochs}", flush=True)
+        print("-" * 10, flush=True)
 
         # --- TRAINING PHASE ---
         model.train()
@@ -75,7 +82,7 @@ def train_model():
 
         epoch_loss = running_loss / len(train_dataset)
         epoch_acc = running_corrects.double() / len(train_dataset)
-        print(f"Train Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}")
+        print(f"Train Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}", flush=True)
 
         # --- VALIDATION PHASE ---
         model.eval()
@@ -95,14 +102,24 @@ def train_model():
 
         val_epoch_loss = val_loss / len(val_dataset)
         val_epoch_acc = val_corrects.double() / len(val_dataset)
-        print(f"Val Loss: {val_epoch_loss:.4f} Acc: {val_epoch_acc:.4f}")
+        print(f"Val Loss: {val_epoch_loss:.4f} Acc: {val_epoch_acc:.4f}", flush=True)
 
         # 6. Model Checkpoint Saving
         if val_epoch_acc > best_val_acc:
             best_val_acc = val_epoch_acc
             save_path = checkpoint_dir / "best_resnet50.pth"
             torch.save(model.state_dict(), save_path)
-            print(f"*** New best model saved to {save_path} ***")
+            print(f"*** New best model saved to {save_path} ***", flush=True)
+
+    # Stop the timer and format the duration
+    total_time = time.time() - start_time
+    hours = int(total_time // 3600)
+    minutes = int((total_time % 3600) // 60)
+    seconds = total_time % 60
+
+    print("\n" + "="*50, flush=True)
+    print(f"Training completed in: {hours}h {minutes}m {seconds:.2f}s", flush=True)
+    print("="*50, flush=True)
 
 if __name__ == "__main__":
     train_model()
