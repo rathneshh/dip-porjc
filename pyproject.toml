@@ -1,0 +1,35 @@
+[project]
+name = "dip-porjc"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "rathneshh", email = "rathneshwarankv@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "albumentations>=2.0.8",
+    "kaggle>=2.2.4",
+    "matplotlib>=3.11.2",
+    "opencv-python-headless>=5.0.0.93",
+    "scikit-learn>=1.9.1",
+    "split-folders>=0.6.1",
+    "torch>=2.5.1",
+    "torchvision>=0.20.1",
+]
+
+[project.scripts]
+dip-porjc = "dip_porjc:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu121", marker = "sys_platform == 'win32'" }]
+torchvision = [{ index = "pytorch-cu121", marker = "sys_platform == 'win32'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu121"
+url = "https://download.pytorch.org/whl/cu121"
+explicit = true

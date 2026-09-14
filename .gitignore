@@ -1,0 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Datasets and downloaded archives
+covid19-radiography-database.zip
+raw_data/
+dataset_split/
+
+# Secrets and local configurations
+.secret
+.DS_Store
