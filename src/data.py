@@ -72,7 +72,8 @@ def get_balanced_sampler(dataset):
 
 # --- TRANSFORMS DEFINED GLOBALLY FOR EXTERNAL IMPORT ---
 train_transform = A.Compose([
-    A.Resize(224, 224),
+    # RandomResizedCrop uses the 'size' tuple
+    A.RandomResizedCrop(size=(224, 224), scale=(0.60, 0.85), p=1.0),
     A.CLAHE(clip_limit=2.0, tile_grid_size=(8, 8), p=1.0),
     A.HorizontalFlip(p=0.5),
     A.Rotate(limit=10, p=0.5),
@@ -81,7 +82,8 @@ train_transform = A.Compose([
 ])
 
 val_test_transform = A.Compose([
-    A.Resize(224, 224),
+    # Resize still strictly requires height and width
+    A.Resize(height=224, width=224),
     A.CLAHE(clip_limit=2.0, tile_grid_size=(8, 8), p=1.0),
     A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
     ToTensorV2()

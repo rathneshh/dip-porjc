@@ -13,8 +13,10 @@ wheels/
 covid19-radiography-database.zip
 raw_data/
 dataset_split/
-trained/
+outputs/
+results/
 checkpoints/
+test/
 
 # Secrets and local configurations
 .secret

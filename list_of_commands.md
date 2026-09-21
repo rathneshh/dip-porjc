@@ -69,7 +69,8 @@ Set-Content -Path "$env:USERPROFILE\.kaggle\access_token" -Value "your-api-key"
 * **Extract (macOS):**
 `unzip covid19-radiography-database.zip -d raw_data`
 * **Extract (Windows PowerShell):**
-`Expand-Archive -Path "covid19-radiography-database.zip" -DestinationPath "raw_data" -Force`
+    * `New-Item -ItemType Directory -Name "raw_data"`
+    * `tar -xf covid19-radiography-database.zip -C raw_data`
 
 **6. Run Data Pipeline Scripts (Cross-Platform)**
 
