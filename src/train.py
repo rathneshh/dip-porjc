@@ -42,9 +42,8 @@ def train_model():
     model = model.to(device)
 
     # 4. Loss Function and Optimizer
-    class_weights = torch.tensor([2.5, 1.0, 2.5], dtype=torch.float).to(device)
-    
-    criterion = nn.CrossEntropyLoss(weight=class_weights)
+    # The WeightedRandomSampler already balances the classes, so we use standard CrossEntropyLoss
+    criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     # 5. Training Loop Setup
